@@ -1,0 +1,22 @@
+
+services:
+  server:
+    build: 
+      context: ./server
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - JWT_SECRET=omnigames_secret_hash_value_909
+    volumes:
+      # Mount the DB file to make it persistent across container restarts
+      - ./server/omnidata.db:/app/omnidata.db
+
+  frontend:
+    build: 
+      context: .
+    ports:
+      # Maps local port 5173 to Nginx 80
+      - "5173:80"
+    depends_on:
+      - server

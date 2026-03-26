@@ -1,0 +1,355 @@
+/* ------------------------------ */
+/* 1. Ludo Container Layout */
+/* ------------------------------ */
+.game-wrapper.ludo {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.ludo-content {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3rem;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .ludo-content {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.ludo-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.active-player-panel {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Dynamic Turn Glow */
+.active-player-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: -1;
+  opacity: 0.15;
+  transition: all 0.5s ease;
+}
+
+.glow-red { background: var(--color-red); }
+.glow-green { background: var(--color-green); }
+.glow-yellow { background: var(--color-yellow); }
+.glow-blue { background: var(--color-blue); }
+
+.turn-indicator {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  transition: color 0.4s ease;
+}
+
+.ludo-message {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  min-height: 2.5rem;
+  letter-spacing: 0.5px;
+}
+
+/* ------------------------------ */
+/* 2. Real 3D Dice Component */
+/* ------------------------------ */
+.dice-scene {
+  width: 100px;
+  height: 100px;
+  margin-top: 2rem;
+  perspective: 600px;
+  cursor: pointer;
+}
+
+.cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cube-rolling-blur {
+  filter: blur(2px) drop-shadow(0 0 20px rgba(255,255,255,0.4));
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cube__face {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+}
+
+.cube__face--front  { transform: rotateY(  0deg) translateZ(50px); }
+.cube__face--right  { transform: rotateY( 90deg) translateZ(50px); }
+.cube__face--back   { transform: rotateY(180deg) translateZ(50px); }
+.cube__face--left   { transform: rotateY(-90deg) translateZ(50px); }
+.cube__face--up     { transform: rotateX( 90deg) translateZ(50px); }
+.cube__face--down   { transform: rotateX(-90deg) translateZ(50px); }
+
+/* Dice Dots styling */
+.dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1e293b;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.5);
+}
+
+.center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.top-left { top: 15%; left: 15%; }
+.top-right { top: 15%; right: 15%; }
+.bottom-left { bottom: 15%; left: 15%; }
+.bottom-right { bottom: 15%; right: 15%; }
+.middle-left { top: 50%; left: 15%; transform: translateY(-50%); }
+.middle-right { top: 50%; right: 15%; transform: translateY(-50%); }
+
+.roll-hint {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  animation: pulse 2s infinite;
+}
+
+/* ------------------------------ */
+/* 3. The 3D Board Wrapper      */
+/* ------------------------------ */
+.ludo-board-wrapper {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.ludo-board-3d-box {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1/1;
+  border-radius: 12px;
+  /* Thick physical board effect */
+  background: #0f172a;
+  box-shadow: 
+    0 20px 50px rgba(0,0,0,0.6), 
+    inset 0 2px 0 rgba(255,255,255,0.1),
+    0 0 0 10px #1e293b,
+    0 0 0 11px #0f172a;
+  padding: 6px;
+}
+
+.ludo-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+
+/* Base Cells */
+.ludo-cell {
+  border-right: 1px solid rgba(255,255,255,0.08); /* neon gridlines */
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-sizing: border-box;
+}
+
+.path {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Special Path Highlights */
+.gradient-glow {
+  position: relative;
+}
+.home-path-red { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.4)); box-shadow: inset 0 0 10px rgba(239,68,68,0.3); }
+.home-path-green { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.4)); box-shadow: inset 0 0 10px rgba(16,185,129,0.3); }
+.home-path-yellow { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.4)); box-shadow: inset 0 0 10px rgba(245,158,11,0.3); }
+.home-path-blue { background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.4)); box-shadow: inset 0 0 10px rgba(59,130,246,0.3); }
+
+.safe-red { background: rgba(239,68,68,0.8); box-shadow: 0 0 15px rgba(239,68,68,0.5); border-radius: 4px; z-index: 1;}
+.safe-green { background: rgba(16,185,129,0.8); box-shadow: 0 0 15px rgba(16,185,129,0.5); border-radius: 4px; z-index: 1;}
+.safe-yellow { background: rgba(245,158,11,0.8); box-shadow: 0 0 15px rgba(245,158,11,0.5); border-radius: 4px; z-index: 1;}
+.safe-blue { background: rgba(59,130,246,0.8); box-shadow: 0 0 15px rgba(59,130,246,0.5); border-radius: 4px; z-index: 1;}
+
+.star-cell {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+}
+.glowing-star::after {
+  content: '★';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fbbf24;
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+}
+
+/* Center Block */
+.home-center-graphic {
+  position: absolute;
+  top: 40%; left: 40%;
+  width: 20%; height: 20%;
+  background: conic-gradient(
+    from 45deg,
+    var(--color-green) 0deg 90deg,
+    var(--color-yellow) 90deg 180deg,
+    var(--color-blue) 180deg 270deg,
+    var(--color-red) 270deg 360deg
+  );
+  clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0); /* Create an X cross in center */
+  z-index: 2;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+/* ------------------------------ */
+/* 4. The Premium Yard Blocks   */
+/* ------------------------------ */
+.yard-overlay {
+  position: absolute;
+  width: 40%; height: 40%;
+  z-index: 3;
+  padding: 4%;
+}
+
+.yard-inner-jewel {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  box-shadow: inset 0 2px 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.block-red .yard-inner-jewel { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.4)); }
+.block-green .yard-inner-jewel { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.4)); }
+.block-yellow .yard-inner-jewel { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.4)); }
+.block-blue .yard-inner-jewel { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.4)); }
+
+/* The dimples where tokens sit inside the yard */
+.dimple-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 70%;
+  height: 70%;
+  gap: 15%;
+}
+
+.dimple {
+  background: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  box-shadow: inset 0 5px 10px rgba(0,0,0,0.6), 0 1px 1px rgba(255,255,255,0.1);
+}
+
+/* ------------------------------ */
+/* 5. Glassmorphism Tokens      */
+/* ------------------------------ */
+.ludo-token {
+  position: absolute;
+  width: calc(100% / 15 * 0.75);
+  height: calc(100% / 15 * 0.75);
+  border-radius: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%); /* Base centering */
+  transition: top 0.4s ease-in-out, left 0.4s ease-in-out;
+  cursor: default;
+  will-change: top, left;
+}
+
+.ludo-token.playable-pulse {
+  cursor: pointer;
+  z-index: 20;
+}
+
+/* The actual 3D Token Graphic */
+.token-jewel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 
+    0 10px 15px rgba(0,0,0,0.6), /* physical drop shadow */
+    inset -2px -4px 8px rgba(0,0,0,0.5), /* inner shade to give depth */
+    inset 0 2px 4px rgba(255,255,255,0.8); /* top rim highlight */
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+
+.token-red .token-jewel { background: radial-gradient(circle at 35% 35%, #f87171, #991b1b); }
+.token-green .token-jewel { background: radial-gradient(circle at 35% 35%, #34d399, #065f46); }
+.token-yellow .token-jewel { background: radial-gradient(circle at 35% 35%, #fbbf24, #92400e); }
+.token-blue .token-jewel { background: radial-gradient(circle at 35% 35%, #60a5fa, #1e3a8a); }
+
+/* Sci-fi glint on the glass */
+.token-glint {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 25%;
+  height: 25%;
+  background: white;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0.6;
+}
+
+.playable-pulse .token-jewel {
+  animation: tokenHover 1.5s infinite alternate;
+}
+
+.playable-pulse:hover .token-jewel {
+  transform: scale(1.15) translateY(-5px);
+  box-shadow: 
+    0 20px 25px rgba(0,0,0,0.6), 
+    inset -2px -4px 8px rgba(0,0,0,0.5), 
+    inset 0 4px 6px rgba(255,255,255,0.9),
+    0 0 20px currentColor; /* Outer glow matching color */
+}
+
+.playable-pulse.token-red { color: var(--color-red); }
+.playable-pulse.token-green { color: var(--color-green); }
+.playable-pulse.token-yellow { color: var(--color-yellow); }
+.playable-pulse.token-blue { color: var(--color-blue); }
+
+@keyframes tokenHover {
+  0% { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1.05); filter: brightness(1.2); }
+}

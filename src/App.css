@@ -1,0 +1,104 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stunning background decorations */
+.bg-decor {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-decor.top-left {
+  width: 50vw;
+  height: 50vw;
+  background: var(--grad-primary);
+  opacity: 0.15;
+  top: -20vw;
+  left: -20vw;
+}
+
+.bg-decor.bottom-right {
+  width: 40vw;
+  height: 40vw;
+  background: linear-gradient(135deg, #ec4899 0%, #3b82f6 100%);
+  opacity: 0.15;
+  bottom: -15vw;
+  right: -15vw;
+}
+
+.main-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Animations that are reusable */
+.game-card-wrapper {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.game-card-wrapper:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+/* Layout for header common in games */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.user-nav {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 50;
+}
+
+.welcome-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.welcome-text b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+
+.loader {
+  font-size: 1.5rem;
+  font-weight: 600;
+  animation: pulse 1s infinite alternate;
+}
